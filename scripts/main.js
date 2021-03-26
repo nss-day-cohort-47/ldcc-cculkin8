@@ -17,6 +17,7 @@ const applicationElement = document.querySelector("#ldsnacks");
 
 //login/register listeners
 applicationElement.addEventListener("click", event => {
+	console.log("event: ", event.target)
 	event.preventDefault();
 	if (event.target.id === "login__submit") {
 		//collect all the details into an object
@@ -39,7 +40,8 @@ applicationElement.addEventListener("click", event => {
 		//collect all the details into an object
 		const userObject = {
 			name: document.querySelector("input[name='registerName']").value,
-			email: document.querySelector("input[name='registerEmail']").value
+			email: document.querySelector("input[name='registerEmail']").value,
+			isAdmin: false,
 		}
 		registerUser(userObject)
 			.then(dbUserObj => {
@@ -66,6 +68,7 @@ applicationElement.addEventListener("click", event => {
 		const snackId = event.target.id.split("__")[1];
 		getSingleSnack(snackId)
 			.then(response => {
+				console.log(response)
 				showDetails(response);
 			})
 	}
