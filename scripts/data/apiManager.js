@@ -45,15 +45,15 @@ export const registerUser = (userObj) => {
 		})
 }
 
+export const getToppings = (snackId) => {
+	return fetch (`${apiURL}/snackToppings?snackId=${snackId}&_expand=topping&_expand=snack`)
+	.then(response => response.json())
+}
 
-///// snack functions
 
 let snackCollection = [];
 
 export const useSnackCollection = () => {
-  //Best practice: we don't want to alter the original state, so
-  //make a copy of it and then return it
-  //the spread operator makes quick work
   const snackCollectionCopy = [...snackCollection]
   return snackCollectionCopy;
 }
