@@ -8,7 +8,7 @@ import { SnackDetails } from "./snacks/SnackDetails.js";
 import { Footer } from "./nav/Footer.js";
 import {
 	logoutUser, setLoggedInUser, loginUser, registerUser, getLoggedInUser,
-	getSnacks, getSingleSnack, getToppings
+	getSnacks, getSingleSnack, getToppings, newTopType
 } from "./data/apiManager.js";
 
 
@@ -102,7 +102,20 @@ const checkForUser = () => {
 		showLoginRegister();
 	}
 }
+applicationElement.addEventListener("click", event => {
+	event.preventDefault();
+	if (event.target.id === "addTypeBtn") {
+	let newOne = prompt("What kind of snack would you like to add?");
+		const typeObject = {
+			name: newOne,
+		};
+		newTopType(typeObject)
+		.then(response => {
+			console.log("is this working?",response )
+		})
+  }
 
+})
 const showLoginRegister = () => {
 	//template strings can be used here too
 	applicationElement.innerHTML += `${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;

@@ -71,3 +71,20 @@ export const getSingleSnack = (snackId) => {
 	return fetch(`${apiURL}/snacks/${snackId}?_expand=type&_expand=season&_expand=inFlavor&_expand=shape`)
 	.then(response => response.json())
 }
+
+let toppingList = [];
+
+export const usingToppingList = () => {
+	const toppingList2 = [...toppingList];
+	return toppingList2;
+  };
+
+  export const newTopType = (typeObj) => {
+	return fetch(`${apiURL}/types`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(typeObj),
+	}).then(response => response.json())
+}
