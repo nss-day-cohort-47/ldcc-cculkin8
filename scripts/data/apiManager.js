@@ -53,7 +53,6 @@ export const getToppings = (snackId) => {
 	   })
 }
 let snackCollection = [];
-
 export const useSnackCollection = () => {
   const snackCollectionCopy = [...snackCollection]
   return snackCollectionCopy;
@@ -67,11 +66,13 @@ export const getSnacks = () => {
 			return parsedResponse;
 		})
 }
-export const getToppingMenu = () => {
+let toppingList = [];
+export const grabToppingMenu = () => {
 	return fetch(`${apiURL}/toppings`)
 		.then(response => response.json())
 		.then(parsedResponse => {
 			return parsedResponse;
+		
 		})
 } 
 export const getSingleSnack = (snackId) => {
@@ -86,8 +87,6 @@ export const getSelectSnacks = (toppingId) => {
 	   })
 	  
 }
-
-let toppingList = [];
 
 export const usingToppingList = () => {
 	const toppingList2 = [...toppingList];
