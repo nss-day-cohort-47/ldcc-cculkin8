@@ -1,17 +1,9 @@
-import { getLoggedInUser, getToppings, usingToppingList } from "../data/apiManager.js"
-let selectTopping = "";
-let selectingToppings = ""
-export const NavBar = () => {
-	getToppings().then((toppings) => {
-	toppings.map((topping) => 
-	 selectTopping += `<option value="${topping.id}">${topping.name}<option>`);
-	selectingToppings = selectTopping
-	return selectTopping;
-	})
-	//only show navItems and addTypeButton if user is logged in
-	
-	const navItems = getLoggedInUser().id
-    ? `
+import { getLoggedInUser } from "../data/apiManager.js"
+
+export const NavBar = (isAdmin) => {
+	let addType = isAdmin ? `<button class="btn btn-outline-primary" type="button">Add A Type</button>` : ``;
+
+	const navItems = getLoggedInUser().id ? `
 	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
@@ -21,21 +13,19 @@ export const NavBar = () => {
 			<button class="btn btn-info" type="button" id="allSnacks">All Snacks</button>
 		</li>
 		<li class="nav-item ms-1">
-			<select class="form-select topping-select btn-info" aria-label="Select A Topping">
-			<option selected>Select A Topping</option>
-				${selectingToppings}
+			<select class="form-select form-select btn-info" id="select_topping" aria-label="Select A Topping">
 			</select>
 		</li>
 		<li class="nav-item ms-1">
 			<button class="btn btn-info" type="button" id="logout">Logout</button>
 		</li>
 	</ul>
-	</div>`
-    : ""; 
-	const addTypeButton = getLoggedInUser().admin ? `
+	</div>` : ""
+
+	const addTypeButton = getLoggedInUser().id ? `
 	<nav class="navbar navbar-light"">
 		<div class="container-fluid">
-			<button id="addTypeBtn" class="addatype" type="button">Add A Type</button>
+			${addType}
 		
 		</div>
 	</nav>` : ""
