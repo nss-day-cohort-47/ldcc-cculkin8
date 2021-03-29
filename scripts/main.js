@@ -4,22 +4,19 @@ import { LoginForm } from "./auth/LoginForm.js";
 import { RegisterForm } from "./auth/RegisterForm.js";
 import { NavBar } from "./nav/NavBar.js";
 import { SnackList } from "./snacks/SnackList.js";
-import { SnackDetails } from "./snacks/SnackDetails.js";
+import { getSnackToppings, SnackDetails } from "./snacks/SnackDetails.js";
 import { Footer } from "./nav/Footer.js";
 import {
 	logoutUser, setLoggedInUser, loginUser, registerUser, getLoggedInUser,
-	getSnacks, getSingleSnack, getToppings
+	getSnacks, getSingleSnack, getToppings, newTopType, grabToppingMenu, getSelectSnacks
 } from "./data/apiManager.js";
 
 
 
 const applicationElement = document.querySelector("#ldsnacks");
-
-//login/register listeners
 applicationElement.addEventListener("click", event => {
 	event.preventDefault();
 	if (event.target.id === "login__submit") {
-		//collect all the details into an object
 		const userObject = {
 			name: document.querySelector("input[name='name']").value,
 			email: document.querySelector("input[name='email']").value
@@ -30,14 +27,11 @@ applicationElement.addEventListener("click", event => {
 					sessionStorage.setItem("user", JSON.stringify(dbUserObj));
 					startLDSnacks();
 				} else {
-					//got a false value - no user
 					const entryElement = document.querySelector(".entryForm");
 					entryElement.innerHTML = `<p class="center">That user does not exist. Please try again or register for your free account.</p> ${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
 				}
 			})
 	} else if (event.target.id === "register__submit") {
-		//collect all the details into an object
-		debugger
 		const userObject = {
 			name: document.querySelector("input[name='registerName']").value,
 			email: document.querySelector("input[name='registerEmail']").value,
@@ -58,9 +52,7 @@ applicationElement.addEventListener("click", event => {
 		checkForUser();
 	}
 })
-// end login register listeners
 
-// snack listeners
 applicationElement.addEventListener("click", event => {
 	event.preventDefault();
 
@@ -72,11 +64,12 @@ applicationElement.addEventListener("click", event => {
 				.then (snackToppings =>{
 					console.log(snackToppings);
 					snackToppings
-					showDetails(snackObj, snackToppings);//!!!! SNACK DETAILS
+					showDetails(snackObj, snackToppings);
 				})
 			})
 	}
 })
+
 
 applicationElement.addEventListener("click", event => {
 	event.preventDefault();
@@ -84,12 +77,25 @@ applicationElement.addEventListener("click", event => {
 		showSnackList();
 	}
 })
-//? SNACK DETAILS
+applicationElement.addEventListener("change", event => {
+    if (event.target.id === "navlist") {
+        let snackSelector = event.target.value
+		getSelectSnacks(snackSelector)
+		.then(response => {
+			let snackarray =[];
+			response.forEach(topping =>{
+				snackarray.push(topping.snack)
+			})
+			const listElement = document.querySelector("#mainContent")
+			listElement.innerHTML = SnackList(snackarray);
+		})
+
+    }
+})
 const showDetails = (snackObj, snackToppings) => {
 	const listElement = document.querySelector("#mainContent");
 	listElement.innerHTML = SnackDetails(snackObj, snackToppings);
 }
-//end snack listeners
 
 const checkForUser = () => {
 	if (sessionStorage.getItem("user")) {
@@ -102,14 +108,27 @@ const checkForUser = () => {
 		showLoginRegister();
 	}
 }
+applicationElement.addEventListener("click", event => {
+	event.preventDefault();
+	if (event.target.id === "addTypeBtn") {
+	let newOne = prompt("What kind of snack would you like to add?");
+		const typeObject = {
+			name: newOne,
+		};
+		newTopType(typeObject)
+		.then(response => {
+			console.log("is this working?",response )
+		})
+  }
 
+})
 const showLoginRegister = () => {
-	//template strings can be used here too
 	applicationElement.innerHTML += `${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
 }
 
 const showNavBar = () => {
 	applicationElement.innerHTML += NavBar();
+
 }
 
 const showSnackList = () => {
@@ -129,6 +148,15 @@ const startLDSnacks = () => {
 	applicationElement.innerHTML += `<div id="mainContent"></div>`;
 	showSnackList();
 	showFooter();
+	createToppingList();
+}
+const createToppingList = () => {
+	const entryHTMLSelector = document.querySelector(".form-select");
+	grabToppingMenu().then(response =>{
+		response.forEach((toppingObj, index) =>{
+			entryHTMLSelector.options[index + 1] = new Option(toppingObj.name, toppingObj.id)
+		})
+	})
 }
 
 checkForUser();

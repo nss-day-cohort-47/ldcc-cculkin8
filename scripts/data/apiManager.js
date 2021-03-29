@@ -46,13 +46,13 @@ export const registerUser = (userObj) => {
 }
 
 export const getToppings = (snackId) => {
-	return fetch (`${apiURL}/snackToppings?snackId=${snackId}&_expand=topping&_expand=snack`)
-	.then(response => response.json())
+	return fetch(`http://localhost:8088/snackToppings?snackId=${snackId}&_expand=topping`)
+	  .then(response => response.json())
+	  .then(parsedResponse => {
+        return parsedResponse;  
+	   })
 }
-
-
 let snackCollection = [];
-
 export const useSnackCollection = () => {
   const snackCollectionCopy = [...snackCollection]
   return snackCollectionCopy;
@@ -66,8 +66,39 @@ export const getSnacks = () => {
 			return parsedResponse;
 		})
 }
-
+let toppingList = [];
+export const grabToppingMenu = () => {
+	return fetch(`${apiURL}/toppings`)
+		.then(response => response.json())
+		.then(parsedResponse => {
+			return parsedResponse;
+		
+		})
+} 
 export const getSingleSnack = (snackId) => {
-	return fetch(`${apiURL}/snacks/${snackId}?_expand=type&_expand=season&_expand=inFlavor&_expand=shape`)
+	return fetch(`${apiURL}/snacks/${snackId}?_expand=inFlavor&_expand=season&_expand=type&_expand=shape`)
 	.then(response => response.json())
+}
+export const getSelectSnacks = (toppingId) => {
+	return fetch(`http://localhost:8088/snackToppings?toppingId=${toppingId}&_expand=snack`)
+	  .then(response => response.json())
+	  .then(parsedResponse => {
+        return parsedResponse;  
+	   })
+
+}
+
+export const usingToppingList = () => {
+	const toppingList2 = [...toppingList];
+	return toppingList2;
+  };
+
+  export const newTopType = (typeObj) => {
+	return fetch(`${apiURL}/types`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(typeObj),
+	}).then(response => response.json())
 }

@@ -1,4 +1,19 @@
-export const SnackDetails = (snackObject, snackToppings) => {
+import { getLoggedInUser } from "../data/apiManager.js"
+import { getToppings } from "../data/apiManager.js"
+export const getSnackToppings = (snackId) => {
+	getToppings(snackId)
+	.then(response => {
+		let toppings = []
+		response.forEach(obj => {
+			toppings.push(obj.topping.name)
+		})
+		let toppingList = "";
+		let mySeparator = ", ";
+		toppingList = toppings.join(mySeparator)
+		document.querySelector("#toppings").innerHTML = toppingList
+	})
+}
+export const SnackDetails = (snackObject) => {
 	return `
 	<div class="col">
 		<div class="card shadow-sm" >
@@ -15,17 +30,14 @@ export const SnackDetails = (snackObject, snackToppings) => {
 						<div class="col col-details">Season: ${snackObject.season.name}</div>
 					</div>
 					<div class="row row-cols-1">
-						<div class="col col-details">${snackToppings.map(topping =>{
-							return topping.topping.name
-						}).join(", ")}</div>
+						<div class="col col-details" id="toppings">${getSnackToppings(snackObject.id)}</div>
 					</div>
 				</div>
 			  	
 				<div class="d-flex justify-content-between align-items-center">
-					<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-outline-secondary" id="editcake__${snackObject.id}" disabled>Edit</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" id="deletecake__${snackObject.id}" disabled>Delete</button>
-					</div>
+					${getLoggedInUser().admin ? 
+					'<div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary" id="editcake__${snackObject.id}" disabled>Edit</button><button type="button" class="btn btn-sm btn-outline-secondary" id="deletecake__${snackObject.id}" disabled>Delete</button></div>'
+					: ""}
                 	<small class="text-muted">Count: ${snackObject.count}</small>
               	</div>
             </div>
