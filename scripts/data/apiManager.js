@@ -58,13 +58,25 @@ export const useSnackCollection = () => {
   return snackCollectionCopy;
 }
 
-export const getSnacks = () => {
-	return fetch(`${apiURL}/snacks`)
+export const getSnacks = (toppingId) => {
+	if (toppingId) {
+		return fetch(`${apiURL}/snackToppings/?toppingId=${toppingId}&_expand=snack`)
+		.then(response => response.json())
+		.then(parsedResponse => {
+			let snackbytopping = []
+			parsedResponse.forEach(item =>{
+				snackbytopping.push(item.snack)
+			})
+			return snackbytopping;
+		})
+	} else {
+		return fetch(`${apiURL}/snacks`
 		.then(response => response.json())
 		.then(parsedResponse => {
 			snackCollection = parsedResponse
 			return parsedResponse;
-		})
+		}))
+	}
 }
 let toppingList = [];
 export const grabToppingMenu = () => {
@@ -79,13 +91,14 @@ export const getSingleSnack = (snackId) => {
 	return fetch(`${apiURL}/snacks/${snackId}?_expand=inFlavor&_expand=season&_expand=type&_expand=shape`)
 	.then(response => response.json())
 }
-export const getSelectSnacks = (toppingId) => {
+export const getSelectSnacks = (toppingId) => { 	   console.log()
+
 	return fetch(`http://localhost:8088/snackToppings?toppingId=${toppingId}&_expand=snack`)
 	  .then(response => response.json())
 	  .then(parsedResponse => {
         return parsedResponse;  
 	   })
-	  
+
 }
 
 export const usingToppingList = () => {

@@ -21,7 +21,6 @@ export const NavBar = (isAdmin) => {
 		</li>
 	</ul>
 	</div>` : ""
-
 	const addTypeButton = getLoggedInUser().id ? `
 	<nav class="navbar navbar-light"">
 		<div class="container-fluid">

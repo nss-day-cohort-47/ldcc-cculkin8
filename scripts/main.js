@@ -158,5 +158,3 @@ const createToppingList = () => {
 		})
 	})
 }
-
-checkForUser();
